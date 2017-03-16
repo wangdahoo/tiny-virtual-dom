@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://unpkg.com/lodash@4.17.4/lodash.min.js"></script>
+  <script src="lib/element.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    var app = document.getElementById('app')
+    var e = new Element('h1', { textContent: 'Hello World!' })
+    app.appendChild(e.render())
+  </script>
+</body>
+</html>
