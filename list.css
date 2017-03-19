@@ -42,3 +42,7 @@ html, body {
   height: 40px;
   border-radius: 4px;
 }
+
+.item.active {
+  background: #f4f4f4;
+}
