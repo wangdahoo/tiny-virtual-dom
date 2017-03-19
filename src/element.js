@@ -1,11 +1,11 @@
 /**
  * Element Object
- * @param {*} tagName 
- * @param {*} props 
- * @param {*} children 
+ * @param {*} tagName
+ * @param {*} props
+ * @param {*} children
  */
 function Element (tagName, props, children) {
-  if (!this instanceof Element) {
+  if (!(this instanceof Element)) {
     return new Element(tagName, props, children)
   }
 
@@ -28,7 +28,7 @@ Element.prototype.render = function () {
   var el = document.createElement(this.tagName)
   var props = this.props
   var tagName = this.tagName.toLowerCase()
-  
+
   for (var propName in props) {
     var propValue = props[propName]
 
@@ -36,7 +36,7 @@ Element.prototype.render = function () {
       el.className = propValue
     } else if (propName === 'style') {
       el.cssText = propValue
-    } else if ((tagName === 'input' || tagName == 'textarea') && propName == 'value') {
+    } else if ((tagName === 'input' || tagName === 'textarea') && propName === 'value') {
       el.value = propValue
     } else {
       el.setAttribute(propName, propValue)
@@ -47,7 +47,6 @@ Element.prototype.render = function () {
     var child = c instanceof Element
       ? c.render()
       : document.createTextNode(c)
-    
     el.appendChild(child)
   })
 
@@ -74,7 +73,7 @@ Element.prototype.nodeTree = function () {
   return [
     _.node(this),
     _.map(this.children, function (child) {
-      return child.nodeTree 
+      return child.nodeTree
         ? child.nodeTree()
         : _.node(child)
     })
@@ -86,7 +85,6 @@ Element.prototype.allNodes = function () {
 }
 
 Element.prototype.degree = function () {
-  var root = this.rootNode()
   var nodes = this.allNodes()
 
   function parent (n) {
@@ -105,6 +103,6 @@ Element.prototype.degree = function () {
   return _.max(_.map(nodes, function (n) { return climb(n) }))
 }
 
-if (typeof window !== 'undeined') {
+if (typeof window !== 'undefined') {
   window.E = Element
 }

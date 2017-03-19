@@ -4,8 +4,15 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "http-server -p 3000",
+    "lint": "eslint 'src/**/*.js' 'examples/**/*.js'"
   },
   "author": "wangdahoo",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^3.18.0",
+    "eslint-config-standard": "^7.1.0",
+    "http-server": "^0.9.0",
+    "standard": "^9.0.2"
+  }
 }
