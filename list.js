@@ -12,7 +12,7 @@ _.each(data, function (d) {
   items.push(new E('li', { className: 'item' }, [
     new E('h2', [d.nickname]),
     new E('p', [d.memo]),
-    new E('img', { src: d.avatar })
+    new E('img', { src: d.avatar, className: 'avatar' })
   ]))
 })
 var ul = new E('ul', { className: 'list' }, items)
