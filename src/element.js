@@ -81,11 +81,7 @@ Element.prototype.nodeTree = function () {
 }
 
 Element.prototype.allNodes = function () {
-  return _.filter(_.flattenDeep(this.nodeTree()), 'key')
-}
-
-Element.prototype.degree = function () {
-  var nodes = this.allNodes()
+  var nodes = _.filter(_.flattenDeep(this.nodeTree()), 'key')
 
   function parent (n) {
     return _.find(nodes, function (node) {
@@ -100,7 +96,21 @@ Element.prototype.degree = function () {
     return climb(p, ++degree)
   }
 
-  return _.max(_.map(nodes, function (n) { return climb(n) }))
+  _.each(nodes, function (n) {
+    n.degree = climb(n)
+  })
+
+  return nodes
+}
+
+Element.prototype.degree = function (key) {
+  var nodes = this.allNodes()
+  var d = _.find(nodes, function (d) {
+    return d.key === key
+  })
+  return d
+    ? d.degree
+    : _.maxBy(nodes, 'degree').degree
 }
 
 if (typeof window !== 'undefined') {

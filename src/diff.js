@@ -6,5 +6,10 @@ var TEXT = 3 // 节点本身为文本节点，且文本内容被更改
 
 function diff (oldTree, newTree) {
   var patches = {}
+
+  _.each(newTree, function (newNode) {
+    console.log(newNode)
+  })
+
   return patches
 }

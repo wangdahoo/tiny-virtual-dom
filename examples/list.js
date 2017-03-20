@@ -36,8 +36,9 @@ ul.children[2].children[2].props.src = 'https://gold-cdn.xitu.io/images/app/logo
 var tree2 = ul.allNodes()
 
 // console.log('node tree =>', ul.nodeTree())
-// console.log('all nodes =>', ul.allNodes())
-// console.log('node tree degree =>', ul.degree())
+console.log('all nodes =>', ul.allNodes())
+console.log('tree\' degree =>', ul.degree())
+console.log('node degree by key =>', ul.degree(ul.children[1].key))
 
 // diff 结果
 console.log(diff(tree1, tree2))
