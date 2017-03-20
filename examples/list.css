@@ -46,3 +46,8 @@ html, body {
 .item.active {
   background: #f4f4f4;
 }
+
+.count-down {
+  text-align: center;
+  font-size: 18px;
+}

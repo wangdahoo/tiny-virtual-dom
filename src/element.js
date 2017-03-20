@@ -1,9 +1,30 @@
-/**
- * Element Object
- * @param {*} tagName
- * @param {*} props
- * @param {*} children
- */
+var NONE = 0 // 节点不变
+var DELETED = 1 // 节点被删除
+var REPLACED = 2 // 节点被替换为其他标签
+var PROP = 3 // 节点属性被修改，包括文本内容
+var REORDER = 4 // 节点被移动（在同一dom层级内）
+
+_.setAttr = function (el, props) {
+  for (var propName in props) {
+    var propValue = props[propName]
+    var tagName = el.tagName.toLowerCase()
+
+    if (['className', 'textContent'].indexOf(propName) > -1) {
+      el[propName] = propValue
+    } else if (propName === 'style') {
+      el.cssText = propValue
+    } else if ((tagName === 'input' || tagName === 'textarea') && propName === 'value') {
+      el.value = propValue
+    } else {
+      el.setAttribute(propName, propValue)
+    }
+  }
+}
+
+_.node = function (e) {
+  return _.pick(e, ['tagName', 'props', 'key', 'parent'])
+}
+
 function Element (tagName, props, children) {
   if (!(this instanceof Element)) {
     return new Element(tagName, props, children)
@@ -27,36 +48,12 @@ function Element (tagName, props, children) {
 Element.prototype.render = function () {
   var el = document.createElement(this.tagName)
   var props = this.props
-  var tagName = this.tagName.toLowerCase()
-
-  for (var propName in props) {
-    var propValue = props[propName]
-
-    if (propName === 'className') {
-      el.className = propValue
-    } else if (propName === 'style') {
-      el.cssText = propValue
-    } else if ((tagName === 'input' || tagName === 'textarea') && propName === 'value') {
-      el.value = propValue
-    } else {
-      el.setAttribute(propName, propValue)
-    }
-  }
-
+  _.setAttr(el, props)
   _.each(this.children, function (c) {
-    var child = c instanceof Element
-      ? c.render()
-      : document.createTextNode(c)
-    el.appendChild(child)
+    el.appendChild(c.render())
   })
-
+  el.setAttribute('v-' + this.key, '')
   return el
-}
-
-_.node = function (e) {
-  return _.isString(e)
-    ? e
-    : { tagName: e.tagName, props: e.props, key: e.key, parent: e.parent }
 }
 
 Element.prototype.rootNode = function () {
@@ -113,6 +110,60 @@ Element.prototype.degree = function (key) {
     : _.maxBy(nodes, 'degree').degree
 }
 
+Element.prototype.rerender = function (patches) {
+  var root = this.key
+  _.each(patches, function (patch, key) {
+    var target = document.querySelector('[v-' + root + '] [v-' + key + ']')
+    if (!target) return
+
+    switch (patch.action) {
+      case DELETED:
+        target.parentNode.removeChild(target)
+        break
+      case REPLACED:
+        target.parentNode.replaceChild(patch.data.render(), target)
+        break
+      case PROP:
+        _.setAttr(target, patch.data)
+        break
+    }
+  })
+}
+
+function diff (oldTree, newTree) {
+  var patches = {}
+
+  _.each(oldTree, function (oldNode, oldIndex) {
+    var key = oldNode.key
+    var degree = oldNode.degree
+    var patch = {}
+
+    var newNode = _.find(newTree, function (n) { 
+      return n.degree === degree
+        && n.key === key
+    })
+
+    if (newNode === undefined) {
+      patch.action = DELETED
+    } else if (newNode.tagName !== oldNode.tagName) {
+      patch.action = REPLACED
+      patch.data = newNode
+    } else if (!_.isEqual(newNode.props, oldNode.props)) {
+      patch.action = PROP
+      patch.data = newNode.props
+    } else {
+      patch.action = NONE
+    }
+
+    if (patch.action !== NONE) {
+      patches[key] = patch
+    }
+  })
+
+  return patches
+}
+
 if (typeof window !== 'undefined') {
   window.E = Element
+  window.D = diff
 }
