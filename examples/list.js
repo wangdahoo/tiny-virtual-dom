@@ -58,6 +58,6 @@ var countDown = setInterval(function () {
   if (sec === 0) {
     clearInterval(countDown)
     ul.rerender(patches)
-  } 
+  }
   document.querySelector('.count-down').innerHTML = sec ? sec-- + '秒后更新视图' : ''
 }, 1000)

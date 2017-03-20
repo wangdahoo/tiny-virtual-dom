@@ -4,6 +4,7 @@ module.exports = {
     '_': true,
     'Element': true,
     'E': true,
+    'D': true,
     'diff': true
   }
 }

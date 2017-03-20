@@ -2,7 +2,9 @@ var NONE = 0 // 节点不变
 var DELETED = 1 // 节点被删除
 var REPLACED = 2 // 节点被替换为其他标签
 var PROP = 3 // 节点属性被修改，包括文本内容
-var REORDER = 4 // 节点被移动（在同一dom层级内）
+
+// TODO: 节点被移动（在同一dom层级内）
+// var REORDER = 4
 
 _.setAttr = function (el, props) {
   for (var propName in props) {
@@ -126,6 +128,7 @@ Element.prototype.rerender = function (patches) {
       case PROP:
         _.setAttr(target, patch.data)
         break
+      // TODO: REORDER
     }
   })
 }
@@ -138,9 +141,8 @@ function diff (oldTree, newTree) {
     var degree = oldNode.degree
     var patch = {}
 
-    var newNode = _.find(newTree, function (n) { 
-      return n.degree === degree
-        && n.key === key
+    var newNode = _.find(newTree, function (n) {
+      return n.degree === degree && n.key === key
     })
 
     if (newNode === undefined) {
